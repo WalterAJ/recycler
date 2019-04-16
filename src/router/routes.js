@@ -10,6 +10,7 @@ import Price from '@/pages/Price'
 import Login from '@/pages/Login'
 import Signin from '@/pages/Signin'
 import Setting from '@/pages/Setting'
+import Variety from '@/pages/Variety'
 export default [
 	{
 		path: '/',
@@ -19,6 +20,11 @@ export default [
 		name: 'login',
 		path: '/login',
 		component: Login
+	},
+	{
+		name: 'variety',
+		path: '/variety',
+		component: Variety 
 	},
 	{
 		name: 'setting',

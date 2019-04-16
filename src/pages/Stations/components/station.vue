@@ -4,24 +4,24 @@
 			<div class="info">
 				<img src="/static/img/avatar-1.jpg" alt="avatar" class='station-avatar'>
 				<div class="detail">
-					<span class="name">杭州阳光废品回收站</span>
+					<span class="name">{{station.station}}</span>
 					<span class="stars">
-						<img src="/static/icons/star.png" class='star' alt="star" v-for="i in 5" :key="i">
-						<span class="value">5.0</span>
+						<img src="/static/icons/star.png" class='star' alt="star" v-for="i in station.star" :key="i">
+						<span class="value">{{station.star}}分</span>
 					</span>
 				</div>
 			</div>
-			<span class="distance">183 m</span>
+			<span class="distance">{{station.distance}} m</span>
 		</div>
 		<div class="u-category">
-			<div class="price-item" v-for="i in 4" :key='i'>
+			<div class="price-item" v-for="item in details" :key='item.type'>
           <div style="display: block">
              <div class="wrapper">
               <div class='name'>
-                废牛皮纸
+               {{item.type}}
               </div>
               <div class="price">
-                2500.0
+               {{item.weight}}
               </div>
             </div>
           </div>
@@ -29,12 +29,44 @@
 		</div>
 		<div class="u-ft">
 			<div class="btn concat">与他联系</div>
-			<div class="btn request">发送请求</div>
+			<div class="btn request" @click="click()">发送请求</div>
 		</div>
 	</div>
 </template>
 <script>
+import axios from 'axios'
+import { Toast } from 'mint-ui';
 export default {
+	data(){
+		return{
+			details:[]
+		}
+	},
+	mounted(){
+		 console.log(this.station);
+		 let details = [];
+		 this.station.detail = JSON.parse(this.station.detail)
+		 for(let key in this.station.detail){
+			 let temp = {
+				 type:'',
+				 weight:' '
+			 }
+			 temp.type = key;
+			 temp.weight = this.station.detail[key];
+			 this.details.push(temp)
+		 }
+	},
+	methods:{
+		click(){
+			Toast({
+          message: "请求发送成功",
+          position: "center",
+          duration: 2000
+        });
+		}
+	},
+
+	props:['station']
 	
 }
 </script>

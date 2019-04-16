@@ -36,6 +36,7 @@
 
 <script>
 import axios from "axios";
+import { Toast } from 'mint-ui';
 export default {
   data(){
     return {
@@ -62,8 +63,16 @@ export default {
          
           if(res.data.length > 0){
              this.$router.push('/workOrder')
-            window.localStorage.setItem('username', res.data[0].username)
-            
+              window.localStorage.setItem('username', res.data[0].username)
+              window.localStorage.setItem('yd', res.data[0].yd)
+              window.localStorage.setItem('variety', res.data[0].variety)
+              window.localStorage.setItem('selVariety', res.data[0].selVariety)
+          }else {
+             Toast({
+              message: "账号密码错误!",
+              position: "bottom",
+              duration: 2000
+             } );
           }
         })
         .catch(err => {

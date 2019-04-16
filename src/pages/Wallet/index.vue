@@ -19,11 +19,11 @@
 					<div class="view-cnt" ref='viewCnt'>
 						<div class="cnt">
 							<span class='title'>账户余额</span>
-							<span class="value">300.00</span>
+							<span class="value">{{balance}}</span>
 						</div>
 						<div class="cnt">
 							<span class='title'>益点数量</span>
-							<span class="value">1399</span>
+							<span class="value">{{yd}}</span>
 						</div>
 					</div>
 				</div>
@@ -45,14 +45,13 @@ export default {
 		MyHeader
   },
   mounted() {
+    this.yd = window.localStorage.getItem('yd');
+    this.balance = window.localStorage.getItem('balance');
     const reset = this.$refs.reset;
     const coin = this.$refs.coin;
     const triangle = this.$refs.triangle;
     const vCnt = this.$refs.viewCnt;
-    console.log(
-      reset.getBoundingClientRect().width,
-      triangle.getBoundingClientRect().width
-    );
+    
     if (this.active == 1) {
       let left =
         reset.getBoundingClientRect().width / 2 -
@@ -63,7 +62,9 @@ export default {
   },
   data() {
     return {
-      active: 1
+      active: 1,
+      balance : '',
+      yd : ''
     };
   },
   methods: {

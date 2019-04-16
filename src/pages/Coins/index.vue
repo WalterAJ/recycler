@@ -1,8 +1,8 @@
 <template>
 	<div class="g-coin">
-		<my-header title="积分交易"></my-header>
+		<my-header title="积分交易" style="position:fixed;top:0;width:100%; "></my-header>
 		<yd-popup v-model="show" position="bottom" height="20%">
-      <div class="pop-btn confirm-btn" @click='changeShow'>
+      <div class="pop-btn confirm-btn" @click='Buy'>
 				确认购买
 			</div>
       <div class="pop-btn cancel-btn" @click='changeShow'>
@@ -10,7 +10,7 @@
 			</div>
     </yd-popup>
 		<div class="m-hd">
-			<div class="current">当前积分： <span class="value">20</span></div>
+			<div class="current">当前积分： <span class="value">{{yd}}</span></div>
 			<div class="sort">
 				<el-dropdown trigger="click">
 					<span class="el-dropdown-link">
@@ -24,10 +24,10 @@
 					</el-dropdown-menu>
 				</el-dropdown>
 			</div>
-			<div class="reset">钱包余额： <span class="value">200</span></div>
+			<div class="reset">钱包余额： <span class="value">{{balance}}</span></div>
 		</div>
 		<div class="m-bd">
-			<div class="u-order" v-for="i in 7" :key='i'>
+			<div class="u-order" v-for="(item,index) in ydList" :key='item.id'>
 				<div class="hd">
 					<div class="user">
 						<img src="/static/img/avatar-1.jpg" alt="avatar" class='avatar'>
@@ -35,18 +35,17 @@
 						<span class="address">浙江省 杭州市</span>
 					</div>
 					<div class="dt">
-						<span class="data">2018-03-01</span>
-						<span class="time">19:34</span>
+						<span class="data">{{item.date}}</span>
 					</div>
 				</div>
 				<div class="bd">
 					<img src="/static/icons/coinLogo.png" alt="coin" class='coin'>
 					<div class="detail">
 						<span class="desc">低价出售益点，可小刀</span>
-						<span class="value">40益点</span>
+						<span class="value">{{item.num}}益点</span>
 					</div>
-					<span class="value">￥4</span>
-					<div class="buy-btn" @click='changeShow'>购买</div>
+					<span class="value">￥{{item.price}}</span>
+					<div class="buy-btn" @click='comfirm(index)'>购买</div>
 				</div>
 			</div>
 			<div class='add-height'></div>
@@ -57,20 +56,65 @@
 import {Popup} from 'vue-ydui/dist/lib.rem/popup';
 import './css/main.css'
 import MyHeader from "@/components/MyHeader";
+import axios from 'axios'
+import { Toast } from 'mint-ui';
 export default {
 	components: {
 		ydPopup: Popup,
 		MyHeader
 	},
+	mounted(){
+		this.yd = window.localStorage.getItem('yd');
+		this.balance = window.localStorage.getItem('balance');
+		 axios.get("/api/yd/getYd")
+		 .then(res =>{
+			 let list = res.data;
+			 
+			 list.forEach(function(item,index){
+				 console.log(item);
+				 let date = new Date(item.date); 
+				 list[index].date = `${date.getUTCFullYear()}-${date.getMonth()}-${date.getDate()}`
+			 })
+
+			 this.ydList = list;
+		 })
+	},
 	data() {
 		return {
-			show: false
+			show: false,
+			ydList:[],
+			yd:Number,
+			balance:Number,
+			index:Number
 		}
 	},
 	methods: {
-		changeShow() {
-			console.log(1)
+		comfirm(index){
+			this.index = index;
 			this.show = !this.show
+			console.log(this.show)
+		},
+		changeShow() {
+			this.show = !this.show
+			console.log(this.show)
+		},
+		Buy() {
+			this.show = !this.show
+			 let ydInfo = this.ydList[this.index];
+			 if(this.balance < ydInfo.price){
+				 Toast({
+              		message: "益点不足!",
+              		position: "center",
+              		duration: 2000
+            	 });
+			 }else{
+				 this.yd = parseInt(this.yd) + parseInt(ydInfo.num);
+				 this.balance -= ydInfo.price;
+				 window.localStorage.setItem('yd', this.yd)
+				 window.localStorage.setItem('balance', this.balance);
+				 
+			 }
+
 		}
 	}
 };
@@ -110,7 +154,7 @@ img.avatar {
 	color: #FFAA42;
 }
 .m-bd {
-  margin-top: 2.75rem;
+  margin-top: 4.75rem;
 	padding-top: 1px;
 }
 

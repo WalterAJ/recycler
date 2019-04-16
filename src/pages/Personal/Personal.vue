@@ -5,7 +5,7 @@
 		</div>
   	<div class="person-content" ref='bd'>
 			<div class="personal-avatar">
-				<img src="" alt="" ref='avatar'/>
+				<img src="/static/img/avatar-9.jpg" alt="" ref='avatar'/>
 			</div>
 			<div class="personal-login" ref='nickname'> 立即登录</div>
 			<div class="personal-function">
@@ -34,17 +34,18 @@
 					</div>
 				</div>
 				</router-link>
-				
+				<router-link to='/variety'>
 				<div class="list">
 					<div class="left">
 						<img src="/static/icons/余额.png" alt="余额" class='icon'>
 						<span>回收类别</span>
 					</div>
 					<div class="right">
-						<span>废纸 塑料 金属</span>
+						<span>{{this.selVariety}}</span>
 						<img src="/static/icons/rightArrow.png" alt="arrow" class='arrow'>
 					</div>
 				</div>
+				</router-link>
 				<div class="list">
 					<div class="left">
 						<img src="/static/icons/地址.png" alt="余额" class='icon'>
@@ -247,10 +248,9 @@ img.order {
 import MyFooter from '@/components/MyFooter'
 export default {
 	mounted() {
-		const nickname = window.localStorage.getItem('nickname')
-		const avatarurl = window.localStorage.getItem('avatarurl')
+		const nickname = window.localStorage.getItem('nickname');
+		this.selVariety = window.localStorage.getItem('selVariety');
 		if (nickname != undefined && nickname != null) {
-			this.$refs.avatar.src=avatarurl
 			this.$refs.nickname.innerHTML = nickname
 			this.$refs.nickname.style.border='0px solid transparent'
 		}
@@ -269,6 +269,8 @@ export default {
   data() {
     return {
 			switch1: true,
+			variety:'',
+			selVariety:'',
       func: [
         { title: "待上门", url: "/static/img/door.png" },
         { title: "待确认", url: "/static/icon/order-processing.png" },

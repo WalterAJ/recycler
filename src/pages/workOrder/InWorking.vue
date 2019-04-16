@@ -58,10 +58,9 @@ export default {
   mounted() {
     
     let past = JSON.parse(window.localStorage.getItem("pasteStatus"));
-    if(past.length > 0){
+    if(past){
       this.orders = past
     } else{
-      console.log(past)
       this.startQueryOrders();
     }
     
@@ -340,6 +339,7 @@ export default {
           this.orders = [];
           let msg = {};
           msg.orders = res.data;//状态为待接单的订单
+          console.log(msg.orders)
           msg.orders.forEach(o => {
             o.detail = JSON.parse(o.detail);
           });//JSON转对象
